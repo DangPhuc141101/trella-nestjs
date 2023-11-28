@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+
+jobs:
+  typecheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/node-version
+        id: node-version
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ steps.node-version.outputs.node-version }}
+          cache: yarn
+      - run: yarn install --immutable
+      - run: yarn lint
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/node-version
+        id: node-version
+      - uses: actions/setup-node@v3
+        with:
+          cache: yarn
+      - run: yarn install --immutable
+      - uses: ./.github/actions/expand-dotenv
+      - run: yarn test --coverage
+
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        node-version: [14.x, 16.x]
+        os: [ubuntu-18.04]
+    steps:
+      - uses: actions/checkout@v1
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Build
+        run: yarn run build --if-present

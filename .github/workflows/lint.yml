@@ -1,0 +1,19 @@
+name: Lint
+
+on: [pull_request]
+
+jobs:
+  eslint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: ./.github/actions/node-version
+        id: node-version
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ steps.node-version.outputs.node-version }}
+          cache: yarn
+      - run: yarn --frozen-lockfile
+      - run: yarn lint

@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      dockerfile: dockers/app/Dockerfile.local
+      context: .
+      args:
+        NODE_IMAGE: ${NODE_IMAGE}
+        APP_PORT: ${APP_PORT}
+    container_name: ${APP_NAME}-app
+    env_file:
+      - .env
+    ports:
+      - 3000:${APP_PORT}
+    command: yarn start:dev
+    volumes:
+      - ./:/home/app
+      - ./node_modules:/home/app/node_modules
+    networks:
+      - backend
+
+  # sonarqube:
+  #   image: ${SONARQUBE_IMAGE}
+  #   hostname: sonarqube
+  #   container_name: ${APP_NAME}-sq
+  #   volumes:
+  #     - sonarqube_data:/opt/sonarqube/data
+  #     - sonarqube_extensions:/opt/sonarqube/extensions
+  #     - sonarqube_logs:/opt/sonarqube/logs
+  #     - sonarqube_bundled-plugins:/opt/sonarqube/lib/bundled-plugins
+  #   ports:
+  #     - ${SONAR_PORT}:${SONAR_PORT}
+  #   networks:
+  #     - backend
+
+  db:
+    image: ${DB_IMAGE}
+    container_name: ${APP_NAME}-db
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+    ports:
+      - 5432:${DB_PORT}
+    networks:
+      - backend
+
+networks:
+  backend:
+    name: ${APP_NAME}-local-network
+
+volumes:
+  sonarqube_data:
+  sonarqube_extensions:
+  sonarqube_logs:
+  sonarqube_bundled-plugins:
