@@ -22,10 +22,9 @@
     "db:migrations:apply": "yarn prisma migrate deploy",
     "db:migrations:create": "yarn prisma migrate dev --create-only",
     "db:schema:format": "yarn prisma format",
-    "db:seed": "ts-node prisma/seeds.ts"
+    "db:seed": "ts-node prisma/seeds/index.ts"
   },
   "dependencies": {
-    "@faker-js/faker": "^8.0.2",
     "@hapi/joi": "^17.1.1",
     "@nestjs/axios": "^3.0.0",
     "@nestjs/common": "^10.0.0",
@@ -52,6 +51,7 @@
     "winston": "^3.10.0"
   },
   "devDependencies": {
+    "@faker-js/faker": "^8.3.1",
     "@nestjs/cli": "^10.0.0",
     "@nestjs/schematics": "^10.0.0",
     "@nestjs/testing": "^10.1.3",
